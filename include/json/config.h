@@ -1,4 +1,4 @@
-// Copyright 2007-2010 Baptiste Lepilleur
+// Copyright 2007-2010 Baptiste Lepilleur and The JsonCpp Authors
 // Distributed under MIT license, or public domain if desired and
 // recognized in your jurisdiction.
 // See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
@@ -83,10 +83,16 @@
 // managable and fixes a set of common hard-to-find bugs.
 #if __cplusplus >= 201103L
 # define JSONCPP_OVERRIDE override
-#elif defined(_MSC_VER) && _MSC_VER > 1600
+# define JSONCPP_NOEXCEPT noexcept
+#elif defined(_MSC_VER) && _MSC_VER > 1600 && _MSC_VER < 1900
 # define JSONCPP_OVERRIDE override
+# define JSONCPP_NOEXCEPT throw()
+#elif defined(_MSC_VER) && _MSC_VER >= 1900
+# define JSONCPP_OVERRIDE override
+# define JSONCPP_NOEXCEPT noexcept
 #else
 # define JSONCPP_OVERRIDE
+# define JSONCPP_NOEXCEPT throw()
 #endif
 
 #ifndef JSON_HAS_RVALUE_REFERENCES
@@ -114,6 +120,9 @@
 #endif
 
 #ifdef __clang__
+#  if __has_extension(attribute_deprecated_with_message)
+#    define JSONCPP_DEPRECATED(message)  __attribute__ ((deprecated(message)))
+#  endif
 #elif defined __GNUC__ // not clang (gcc comes later since clang emulates gcc)
 #  if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5))
 #    define JSONCPP_DEPRECATED(message)  __attribute__ ((deprecated(message)))

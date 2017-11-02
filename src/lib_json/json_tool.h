@@ -1,4 +1,4 @@
-// Copyright 2007-2010 Baptiste Lepilleur
+// Copyright 2007-2010 Baptiste Lepilleur and The JsonCpp Authors
 // Distributed under MIT license, or public domain if desired and
 // recognized in your jurisdiction.
 // See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
@@ -6,7 +6,13 @@
 #ifndef LIB_JSONCPP_JSON_TOOL_H_INCLUDED
 #define LIB_JSONCPP_JSON_TOOL_H_INCLUDED
 
-#ifndef NO_LOCALE_SUPPORT
+
+// Also support old flag NO_LOCALE_SUPPORT
+#ifdef NO_LOCALE_SUPPORT
+#define JSONCPP_NO_LOCALE_SUPPORT
+#endif
+
+#ifndef JSONCPP_NO_LOCALE_SUPPORT
 #include <clocale>
 #endif
 
@@ -18,7 +24,7 @@
 
 namespace Json {
 static char getDecimalPoint() {
-#ifdef NO_LOCALE_SUPPORT
+#ifdef JSONCPP_NO_LOCALE_SUPPORT
   return '\0';
 #else
   struct lconv* lc = localeconv();
@@ -54,9 +60,6 @@ static inline JSONCPP_STRING codePointToUTF8(unsigned int cp) {
 
   return result;
 }
-
-/// Returns true if ch is a control character (in range [1,31]).
-static inline bool isControlCharacter(char ch) { return ch > 0 && ch <= 0x1F; }
 
 enum {
   /// Constant that specify the size of the buffer that must be passed to
